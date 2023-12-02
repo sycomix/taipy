@@ -259,17 +259,17 @@ def test_scenario_only_submit_same_task_once():
 
     jobs = _Orchestrator.submit(scenario_1)
     assert len(jobs) == 3
-    assert all([job.is_completed() for job in jobs])
+    assert all(job.is_completed() for job in jobs)
     assert all(not _Orchestrator._is_blocked(job) for job in jobs)
 
     jobs = _Orchestrator.submit(sequence_1)
     assert len(jobs) == 2
-    assert all([job.is_completed() for job in jobs])
+    assert all(job.is_completed() for job in jobs)
     assert all(not _Orchestrator._is_blocked(job) for job in jobs)
 
     jobs = _Orchestrator.submit(sequence_2)
     assert len(jobs) == 2
-    assert all([job.is_completed() for job in jobs])
+    assert all(job.is_completed() for job in jobs)
     assert all(not _Orchestrator._is_blocked(job) for job in jobs)
 
 
@@ -303,14 +303,20 @@ def test_update_status_fail_job():
     jobs = _Orchestrator.submit(scenario_1)
     tasks_jobs = {job._task.id: job for job in jobs}
     assert tasks_jobs["task_0"].is_failed()
-    assert all([job.is_abandoned() for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]])
+    assert all(
+        job.is_abandoned()
+        for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]
+    )
     assert tasks_jobs["task_3"].is_completed()
     assert all(not _Orchestrator._is_blocked(job) for job in jobs)
 
     jobs = _Orchestrator.submit(scenario_2)
     tasks_jobs = {job._task.id: job for job in jobs}
     assert tasks_jobs["task_0"].is_failed()
-    assert all([job.is_abandoned() for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]])
+    assert all(
+        job.is_abandoned()
+        for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]
+    )
     assert tasks_jobs["task_3"].is_completed()
     assert all(not _Orchestrator._is_blocked(job) for job in jobs)
 
@@ -328,7 +334,7 @@ def test_update_status_fail_job_in_parallel():
     task_3 = Task("task_config_3", {}, print, input=[dn_2], id="task_3")
     scenario_1 = Scenario(
         "scenario_config_1",
-        set([task_0, task_1, task_2, task_3]),
+        {task_0, task_1, task_2, task_3},
         {},
         set(),
         "scenario_1",
@@ -336,7 +342,7 @@ def test_update_status_fail_job_in_parallel():
     )
     scenario_2 = Scenario(
         "scenario_config_2",
-        set([task_0, task_1, task_2, task_3]),
+        {task_0, task_1, task_2, task_3},
         {},
         set(),
         "scenario_2",
@@ -360,27 +366,47 @@ def test_update_status_fail_job_in_parallel():
     jobs = _Orchestrator.submit(sequence_1)
     tasks_jobs = {job._task.id: job for job in jobs}
     assert_true_after_time(tasks_jobs["task_0"].is_failed)
-    assert_true_after_time(lambda: all([job.is_abandoned() for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]]))
+    assert_true_after_time(
+        lambda: all(
+            job.is_abandoned()
+            for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]
+        )
+    )
     assert_true_after_time(lambda: all(not _Orchestrator._is_blocked(job) for job in jobs))
 
     jobs = _Orchestrator.submit(scenario_1.sequences["sequence_1"])
     tasks_jobs = {job._task.id: job for job in jobs}
     assert_true_after_time(tasks_jobs["task_0"].is_failed)
-    assert_true_after_time(lambda: all([job.is_abandoned() for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]]))
+    assert_true_after_time(
+        lambda: all(
+            job.is_abandoned()
+            for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]
+        )
+    )
     assert_true_after_time(lambda: all(not _Orchestrator._is_blocked(job) for job in jobs))
 
     jobs = _Orchestrator.submit(scenario_1)
     tasks_jobs = {job._task.id: job for job in jobs}
     assert_true_after_time(tasks_jobs["task_0"].is_failed)
     assert_true_after_time(tasks_jobs["task_3"].is_completed)
-    assert_true_after_time(lambda: all([job.is_abandoned() for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]]))
+    assert_true_after_time(
+        lambda: all(
+            job.is_abandoned()
+            for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]
+        )
+    )
     assert_true_after_time(lambda: all(not _Orchestrator._is_blocked(job) for job in jobs))
 
     jobs = _Orchestrator.submit(scenario_2)
     tasks_jobs = {job._task.id: job for job in jobs}
     assert_true_after_time(tasks_jobs["task_0"].is_failed)
     assert_true_after_time(tasks_jobs["task_3"].is_completed)
-    assert_true_after_time(lambda: all([job.is_abandoned() for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]]))
+    assert_true_after_time(
+        lambda: all(
+            job.is_abandoned()
+            for job in [tasks_jobs["task_1"], tasks_jobs["task_2"]]
+        )
+    )
     assert_true_after_time(lambda: all(not _Orchestrator._is_blocked(job) for job in jobs))
 
 

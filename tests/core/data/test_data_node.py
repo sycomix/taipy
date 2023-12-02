@@ -722,6 +722,7 @@ class TestDataNode:
         )
         with mock.patch("src.taipy.core.get") as get_mck:
 
+
             class MockOwner:
                 label = "owner_label"
 
@@ -729,7 +730,7 @@ class TestDataNode:
                     return self.label
 
             get_mck.return_value = MockOwner()
-            assert dn.get_label() == "owner_label > " + dn.name
+            assert dn.get_label() == f"owner_label > {dn.name}"
             assert dn.get_simple_label() == dn.name
 
     def test_explicit_label(self):
