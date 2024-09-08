@@ -240,9 +240,7 @@ class ExcelDataNode(DataNode, _AbstractFileDataNode, _AbstractTabularDataNode):
                         work_books[sheet_name] = self._read_as_pandas_dataframe(sheet_name)
                     continue
 
-            res = list()
-            for row in work_sheet.rows:
-                res.append([col.value for col in row])
+            res = [[col.value for col in row] for row in work_sheet.rows]
             if self.properties[self.__HAS_HEADER_PROPERTY] and res:
                 header = res.pop(0)
                 for i, row in enumerate(res):
@@ -343,7 +341,8 @@ class ExcelDataNode(DataNode, _AbstractFileDataNode, _AbstractTabularDataNode):
 
     def _append(self, data: Any):
         if isinstance(data, Dict) and all(
-            [isinstance(x, (pd.DataFrame, modin_pd.DataFrame, np.ndarray)) for x in data.values()]
+            isinstance(x, (pd.DataFrame, modin_pd.DataFrame, np.ndarray))
+            for x in data.values()
         ):
             self.__append_excel_with_multiple_sheets(data)
         elif isinstance(data, (pd.DataFrame, modin_pd.DataFrame)):
@@ -352,8 +351,7 @@ class ExcelDataNode(DataNode, _AbstractFileDataNode, _AbstractTabularDataNode):
             self.__append_excel_with_single_sheet(pd.DataFrame(data).to_excel, index=False, header=False)
 
     def __write_excel_with_single_sheet(self, write_excel_fct, *args, **kwargs):
-        sheet_name = self.properties.get(self.__SHEET_NAME_PROPERTY)
-        if sheet_name:
+        if sheet_name := self.properties.get(self.__SHEET_NAME_PROPERTY):
             if not isinstance(sheet_name, str):
                 if len(sheet_name) > 1:
                     raise SheetNameLengthMismatch
@@ -379,7 +377,8 @@ class ExcelDataNode(DataNode, _AbstractFileDataNode, _AbstractTabularDataNode):
 
     def _write(self, data: Any):
         if isinstance(data, Dict) and all(
-            [isinstance(x, (pd.DataFrame, modin_pd.DataFrame, np.ndarray)) for x in data.values()]
+            isinstance(x, (pd.DataFrame, modin_pd.DataFrame, np.ndarray))
+            for x in data.values()
         ):
             self.__write_excel_with_multiple_sheets(data)
         elif isinstance(data, (pd.DataFrame, modin_pd.DataFrame)):
@@ -396,7 +395,8 @@ class ExcelDataNode(DataNode, _AbstractFileDataNode, _AbstractTabularDataNode):
             job_id (JobId^): An optional identifier of the writer.
         """
         if isinstance(data, Dict) and all(
-            [isinstance(x, (pd.DataFrame, modin_pd.DataFrame, np.ndarray)) for x in data.values()]
+            isinstance(x, (pd.DataFrame, modin_pd.DataFrame, np.ndarray))
+            for x in data.values()
         ):
             self.__write_excel_with_multiple_sheets(data, columns=columns)
         else:

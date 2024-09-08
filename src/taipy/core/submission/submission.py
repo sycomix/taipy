@@ -106,13 +106,9 @@ class Submission(_Entity, _Labeled):
     @property  # type: ignore
     @_self_reload(_MANAGER_NAME)
     def jobs(self) -> List[Job]:
-        jobs = []
         job_manager = _JobManagerFactory._build_manager()
 
-        for job in self._jobs:
-            jobs.append(job_manager._get(job))
-
-        return jobs
+        return [job_manager._get(job) for job in self._jobs]
 
     @jobs.setter  # type: ignore
     @_self_setter(_MANAGER_NAME)

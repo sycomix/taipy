@@ -33,7 +33,7 @@ class _SubmissionConverter(_AbstractConverter):
 
     @classmethod
     def _model_to_entity(cls, model: _SubmissionModel) -> Submission:
-        submission = Submission(
+        return Submission(
             entity_id=model.entity_id,
             entity_type=model.entity_type,
             id=SubmissionId(model.id),
@@ -42,4 +42,3 @@ class _SubmissionConverter(_AbstractConverter):
             submission_status=model.submission_status,
             version=model.version,
         )
-        return submission

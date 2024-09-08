@@ -96,7 +96,7 @@ def test_create_job(scenario, task, job):
     assert job.submit_entity == scenario
     with mock.patch("src.taipy.core.get") as get_mck:
         get_mck.return_value = task
-        assert job.get_label() == "name > " + job.id
+        assert job.get_label() == f"name > {job.id}"
     assert job.get_simple_label() == job.id
 
 
